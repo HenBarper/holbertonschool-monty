@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 /*=======================================================*/
 /*=================   DATA STRUCTURES   =================*/
@@ -36,6 +37,10 @@ typedef struct instruction_s
 	void (*f)(stack_t **stack, unsigned int line_number);
 } instruction_t;
 
+/*=======================================================*/
+/*===================   PROTOTYPES   ====================*/
+/*=======================================================*/
 
+int main(int ac, char **av);
 
 #endif
