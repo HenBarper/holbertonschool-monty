@@ -13,5 +13,19 @@
  */
 int main(int ac, char **av)
 {
-	return (-1);
+	FILE *fd = NULL;
+
+	if (ac != 2)
+	{
+		fprintf(stderr, "%s\n", "USAGE: monty file");
+		return (EXIT_FAILURE);
+	}
+
+	fd = fopen(av[1], "r");
+	if (fd == NULL)
+	{
+		fprintf(stderr, "Error: Can't open file %s\n", (av[1]));
+		return (EXIT_FAILURE);
+	}
+	return (0);
 }
