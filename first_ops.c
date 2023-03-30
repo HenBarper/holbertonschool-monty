@@ -7,6 +7,14 @@
  */
 void pall(stack_t **stack, unsigned int line_number)
 {
+	stack_t *node;
+
+	while (node)
+	{
+		printf("%d\n", node->n);
+		node = node->next;
+	}
+	(void) line_number;
 }
 
 /**
