@@ -3,7 +3,7 @@
 /**
  * free_stack - Free the allocated memory for stack
  * @stack: ptr to the doubly linked stack representation
- * Return: void
+ * Return: nothing
  */
 
 void free_stack(stack_t **stack)
