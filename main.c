@@ -42,7 +42,7 @@ int main(int argc, char **argv)
 			if (token == NULL)
 			{
 				free(buffer), buffer = NULL, free_stack(&stack);
-				fprintf(stderr, "L%d: usage: push integer\n", line_number), err();
+				fprintf(stderr, "L%d: usage: push integer\n", line_number), close_error();
 			}
 			strcpy(n, token);
 		}
@@ -50,7 +50,7 @@ int main(int argc, char **argv)
 		if (strcmp(op, "push") == 0)
 			set_n(&stack, line_number, n);
 	}
-	free(buffer), fclose(file), free_stack(&stack);
+	free(buffer), fclose(fd), free_stack(&stack);
 	return (EXIT_SUCCESS);
 }
 
@@ -74,7 +74,7 @@ void (*get_func(stack_t **stack, int l, char *code))(stack_t **, unsigned int)
 		{"nop", nop}
 	};
 
-	while (strcmp(code, instruction[i].opcode) != 0)
+	while (strcmp(code, instructions[i].opcode) != 0)
 	{
 		i++;
 		if (i > 7)
