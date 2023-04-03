@@ -16,7 +16,7 @@ FILE *fd = NULL;
 int main(int argc, char **argv)
 {
 	void (*f)(stack_t **, unsigned int) = NULL;
-	char *buffer = NULL, *token = NULL, *op = NULL, *n = NULL;
+	char *buffer = NULL, *token = NULL, op[50] = {'\0'}, n[50] = {'\0'};
 	size_t length = 0;
 	stack_t *stack = NULL;
 	const char deliminators[] = " \t\n";
@@ -28,14 +28,16 @@ int main(int argc, char **argv)
 	}
 	fd = fopen(argv[1], "r");
 	if (fd == NULL)
-	{
 		fprintf(stderr, "Error: Can't open file %s\n", argv[1]), exit(EXIT_FAILURE);
-	}
 	while (getline(&buffer, &length, fd) != -1)
 	{
 		token = strtok((buffer), deliminators);
+		if (!token)
+			free(buffer), buffer = NULL, continue;
 		strcpy(op, token);
 		f = get_func(&stack, line_number, token);
+		if (f == NULL)
+			fprintf(stderr, "Error: malloc failed\n"), close_error();
 		if (strcmp(op, "push") == 0)
 		{
 			token = strtok(NULL, deliminators);
@@ -117,4 +119,19 @@ void close_error(void)
 {
 	fclose(fd);
 	exit(EXIT_FAILURE);
+}
+
+/**
+ * free_stack - frees the linked list
+ * @stack: the stack
+ */
+void free_stack(stack_t **stack)
+{
+	if (stack == NULL || (*stack) == NULL)
+	{
+		return;
+	}
+	free_stack(&((*stack)->next));
+	free(*stack);
+	*stack = NULL;
 }
