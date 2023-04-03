@@ -38,20 +38,20 @@ int main(int argc, char **argv)
 		strcpy(op, token);
 		f = get_func(&stack, line_number, token);
 		if (f == NULL)
-			fprintf(stderr, "Error: malloc failed\n"), close_error();
+			fprintf(stderr, "Error: malloc failed\n"), err();
 		if (strcmp(op, "push") == 0)
 		{
 			token = strtok(NULL, deliminators);
 			if (token == NULL)
 			{
 				free(buffer), buffer = NULL, free_stack(&stack);
-				fprintf(stderr, "L%d: usage: push integer\n", line_number), close_error();
+				fprintf(stderr, "L%d: usage: push integer\n", line_number), err();
 			}
 			strcpy(n, token);
 		}
 		free(buffer), buffer = NULL, f(&stack, line_number);
 		if (strcmp(op, "push") == 0)
-			set_n(&stack, line_number, n);
+			pushOp(&stack, line_number, n);
 	}
 	free(buffer), fclose(fd), free_stack(&stack);
 	return (EXIT_SUCCESS);
@@ -84,19 +84,19 @@ void (*get_func(stack_t **stack, int l, char *code))(stack_t **, unsigned int)
 		{
 			fprintf(stderr, "L%d: unknown instructions %s\n", l, code);
 			free_stack(stack);
-			close_error();
+			err();
 		}
 	}
 	return (instructions[i].f);
 }
 
 /**
- * set_n - sets n value of new node
+ * pushOp - sets n value of new node
  * @stack: linked list
  * @line_num: current line
  * @num: number to add
  */
-void set_n(stack_t **stack, unsigned int line_num, char *num)
+void pushOp(stack_t **stack, unsigned int line_num, char *num)
 {
 	if (strcmp(num, "0") == 0)
 		(*stack)->n = 0;
@@ -107,16 +107,16 @@ void set_n(stack_t **stack, unsigned int line_num, char *num)
 		{
 			fprintf(stderr, "Error: L%d: usage: push integer\n", line_num);
 			free_stack(stack);
-			close_error();
+			err();
 		}
 	}
 }
 
 /**
- * close_error - close file and exit
+ * err - close file and exit
  * Return: void
  */
-void close_error(void)
+void err(void)
 {
 	fclose(fd);
 	exit(EXIT_FAILURE);

@@ -55,9 +55,11 @@ void swap(stack_t **stack, unsigned int line_number);
 void add(stack_t **stack, unsigned int line_number);
 
 void (*get_func(stack_t **stack, int l, char *code))(stack_t **, unsigned int);
-void set_n(stack_t **stack, unsigned int line_num, char *num);
+/*void set_n(stack_t **stack, unsigned int line_num, char *num);*/
+void pushOp(stack_t **stack, unsigned int line_number, char *pushNum);
 void free_stack(stack_t **stack);
-void close_error(void);
+/*void close_error(void);*/
+void err(void);
 
 /*================   GLOBAL VARIABLE   ==================*/
 extern FILE *fd;

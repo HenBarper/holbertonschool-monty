@@ -7,15 +7,25 @@
  */
 void push(stack_t **stack, unsigned int line_number)
 {
-	stack_t *new;
+	stack_t *newNode;
 
-	(void)line_number;
-	new = malloc(sizeof(stack_t));
-	if (new == NULL)
+	newNode = malloc(sizeof(stack_t));
+
+	if (!newNode)	
 	{
 		fprintf(stderr, "Error: malloc failed\n");
 		free_stack(stack);
+		err();
 	}
+	(void)line_number;
+
+	if (*stack)
+		(*stack)->prev = newNode;
+
+	newNode->prev = NULL;
+	newNode->next = *stack;
+	newNode->n = 0;
+	*stack = newNode;
 }
 
 /**
@@ -31,7 +41,8 @@ void pop(stack_t **stack, unsigned int line_number)
 	if (!(*stack))
 	{
 		fprintf(stderr, "L%d: can't pop an empty stack\n", line_number);
-		close_error();
+		err();
+		/*close_error();*/
 		exit(EXIT_FAILURE);
 	}
 
@@ -53,7 +64,8 @@ void swap(stack_t **stack, unsigned int line_number)
 	if (!(*stack) || !(*stack)->next)
 	{
 		fprintf(stderr, "L%d: can't swap, stack too short\n", line_number);
-		close_error();
+		err();
+		/*close_error();*/
 	}
 
 	(*stack)->n = (*stack)->next->n;
@@ -73,7 +85,8 @@ void add(stack_t **stack, unsigned int line_number)
 	{
 		fprintf(stderr, "L%d: can't add, stack too short\n", line_number);
 		free_stack(stack);
-		close_error();
+		err();
+		/*close_error();*/
 	}
 
 	temp->next->n += temp->n;
