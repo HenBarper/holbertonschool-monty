@@ -7,15 +7,15 @@
  */
 void pall(stack_t **stack, unsigned int line_number)
 {
-	stack_t *node;
+	stack_t *temp;
 
-	node = *stack;
-	while (node)
+	(void)line_number;
+	temp = *stack;
+	while (temp)
 	{
-		printf("%d\n", node->n);
-		node = node->next;
+		printf("%d\n", temp->n);
+		temp = temp->next;
 	}
-	(void) line_number;
 }
 
 /**
