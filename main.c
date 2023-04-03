@@ -23,9 +23,7 @@ int main(int argc, char **argv)
 	unsigned int line_number = 1;
 
 	if (argc != 2)
-	{
 		fprintf(stderr, "USAGE: monty file\n"), exit(EXIT_FAILURE);
-	}
 	fd = fopen(argv[1], "r");
 	if (fd == NULL)
 		fprintf(stderr, "Error: Can't open file %s\n", argv[1]), exit(EXIT_FAILURE);
@@ -33,7 +31,10 @@ int main(int argc, char **argv)
 	{
 		token = strtok((buffer), deliminators);
 		if (!token)
-			free(buffer), buffer = NULL, continue;
+		{
+			free(buffer), buffer = NULL;
+			continue;
+		}
 		strcpy(op, token);
 		f = get_func(&stack, line_number, token);
 		if (f == NULL)
@@ -119,19 +120,4 @@ void close_error(void)
 {
 	fclose(fd);
 	exit(EXIT_FAILURE);
-}
-
-/**
- * free_stack - frees the linked list
- * @stack: the stack
- */
-void free_stack(stack_t **stack)
-{
-	if (stack == NULL || (*stack) == NULL)
-	{
-		return;
-	}
-	free_stack(&((*stack)->next));
-	free(*stack);
-	*stack = NULL;
 }
