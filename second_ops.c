@@ -15,7 +15,7 @@ void push(stack_t **stack, unsigned int line_number)
 	{
 		fprintf(stderr, "Error: malloc failed\n");
 		free_stack(stack);
-		err();
+		close_error();
 	}
 	(void)line_number;
 
@@ -41,8 +41,8 @@ void pop(stack_t **stack, unsigned int line_number)
 	if (!(*stack))
 	{
 		fprintf(stderr, "L%d: can't pop an empty stack\n", line_number);
-		err();
-		/*close_error();*/
+		fclose(fd);
+		free_stack(stack);
 		exit(EXIT_FAILURE);
 	}
 
@@ -64,8 +64,8 @@ void swap(stack_t **stack, unsigned int line_number)
 	if (!(*stack) || !(*stack)->next)
 	{
 		fprintf(stderr, "L%d: can't swap, stack too short\n", line_number);
-		err();
-		/*close_error();*/
+		close_error();
+		exit(EXIT_FAILURE);
 	}
 
 	(*stack)->n = (*stack)->next->n;
@@ -85,8 +85,7 @@ void add(stack_t **stack, unsigned int line_number)
 	{
 		fprintf(stderr, "L%d: can't add, stack too short\n", line_number);
 		free_stack(stack);
-		err();
-		/*close_error();*/
+		close_error();
 	}
 
 	temp->next->n += temp->n;

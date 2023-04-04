@@ -1,6 +1,6 @@
 #include "monty.h"
 
-FILE *fd = NULL;
+FILE *file = NULL;
 
 /**
  * main - runs monty bytecode interpreter
@@ -12,18 +12,18 @@ int main(int argc, char **argv)
 {
 	void (*f)(stack_t **, unsigned int) = NULL;
 	char *buffer = NULL, op[50] = {'\0'}, pushNum[50] = {'\0'}, *token = NULL;
-	size_t length = 0;
+	size_t bufsize = 0;
 	stack_t *stack = NULL;
 	unsigned int line_number = 1;
 
 	if (argc != 2)
 		fprintf(stderr, "USAGE: monty file\n"), exit(EXIT_FAILURE);
-	fd = fopen(argv[1], "r");
-	if (!fd)
+	file = fopen(argv[1], "r");
+	if (!file)
 		fprintf(stderr, "Error: Can't open file %s\n", argv[1]), exit(EXIT_FAILURE);
-	for (; getline(&buffer, &length, fd) != EOF; line_number++)
+	for (; getline(&buffer, &bufsize, file) != EOF; line_number++)
 	{
-		token = strtok((buffer), " \t\n");
+		token = strtok((buffer), " $\t\n");
 		if (!token)
 		{
 			free(buffer), buffer = NULL;
@@ -32,14 +32,14 @@ int main(int argc, char **argv)
 		strcpy(op, token);
 		f = get_func(&stack, line_number, op);
 		if (!f)
-			fprintf(stderr, "Error: malloc failed\n"), close_error();
+			fprintf(stderr, "Error: malloc failed\n"), err();
 		if (strcmp(op, "push") == 0)
 		{
-			token = strtok(NULL, " \t\n");
+			token = strtok(NULL, " $\t\n");
 			if (!token)
 			{
 				free(buffer), buffer = NULL, free_stack(&stack);
-				fprintf(stderr, "L%d: usage: push integer\n", line_number), close_error();
+				fprintf(stderr, "L%d: usage: push integer\n", line_number), err();
 			}
 			strcpy(pushNum, token);
 		}
@@ -48,9 +48,10 @@ int main(int argc, char **argv)
 		if (strcmp(op, "push") == 0)
 			pushOp(&stack, line_number, pushNum);
 	}
-	free(buffer), fclose(fd), free_stack(&stack);
+	free(buffer), fclose(file), free_stack(&stack);
 	return (EXIT_SUCCESS);
 }
+
 
 /**
  * get_func - finds function to use to execute the desired opcode
@@ -77,9 +78,10 @@ void (*get_func(stack_t **stack, int l, char *code))(stack_t **, unsigned int)
 		i++;
 		if (i > 7)
 		{
+			printf("i = %d, code = %s\n", i, code);
 			fprintf(stderr, "L%d: unknown instruction %s\n", l, code);
 			free_stack(stack);
-			close_error();
+			err();
 		}
 	}
 	return (instruction[i].f);
@@ -88,9 +90,9 @@ void (*get_func(stack_t **stack, int l, char *code))(stack_t **, unsigned int)
 /**
  * err - error handler
  */
-void close_error(void)
+void err(void)
 {
-	fclose(fd);
+	fclose(file);
 	exit(EXIT_FAILURE);
 }
 
@@ -111,7 +113,22 @@ void pushOp(stack_t **stack, unsigned int line_number, char *pushNum)
 		{
 			fprintf(stderr, "Error: L%d: usage: push integer\n", line_number);
 			free_stack(stack);
-			close_error();
+			err();
 		}
 	}
+}
+
+/**
+ * free_stack - frees a linked list stack.
+ * @stack: stack to free
+ */
+void free_stack(stack_t **stack)
+{
+	if (!(stack) || !(*stack))
+	{
+		return;
+	}
+	free_stack(&((*stack)->next));
+	free(*stack);
+	*stack = NULL;
 }
