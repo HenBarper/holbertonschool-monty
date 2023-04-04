@@ -86,7 +86,7 @@ void (*get_func(stack_t **stack, int l, char *code))(stack_t **, unsigned int)
 }
 
 /**
- * err - error handler
+ * close_error - error handler
  */
 void close_error(void)
 {
